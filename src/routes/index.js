@@ -1,6 +1,14 @@
-const v1Routes = require("./v1");
+const express = require('express');
+const router = express.Router();
 
-module.exports = function(app){
-    app.use("/api/airlineApp/v1", v1Routes);
-    
-}
+const v1Router = require('./v1');
+
+router.get('/',(req,res,next)=>{
+    res.status(200).send({
+        message : "Hello there"
+    });
+});
+
+router.use('/v1', v1Router);
+
+module.exports = router;
