@@ -70,7 +70,7 @@ const checkUserLoginDetails = async(req,res,next)=>{
         const username = req.body.username;
         const password = req.body.password;
         const email = req.body.email;
-
+        
         if(!username){
             res.status(400).send({
                 message : "username cannot be empty"
@@ -78,7 +78,7 @@ const checkUserLoginDetails = async(req,res,next)=>{
 
             return;
         }
-
+        
         else if(!password){
             res.status(400).send({
                 message : "password cannot be empty"
@@ -101,7 +101,6 @@ const checkUserLoginDetails = async(req,res,next)=>{
                     email : email
                 }
             });
-
             if(user.length==0){
                 res.status(404).send({
                     message : "Could not find the user"
@@ -127,31 +126,69 @@ const checkUserLoginDetails = async(req,res,next)=>{
     }
     catch(err){
         res.status(500).send({
-            message2 : "Some internal server error occurred "+ err
+            message : "Some internal server error occurred "+ err
         });
     }
 }
 
 const isTokenValid = async(req,res,next)=>{
     // console.log(req.headers);
-    var token = req.headers["authorization"];
-    console.log(token);
-    if(!token){
-        return res.status(400).send({
-            message : "Token not provided"
-        });
-    }
+    try{
+        var token = req.headers["authorization"];
 
-    await jwt.verify(token,config.secret,(err,decoded)=>{
-        if(err){
-            return res.status(401).send({
-                message : "Unauthorized/Invalid Token"
+        if(!token){
+            return res.status(400).send({
+                message : "Token not provided"
             });
         }
-        console.log(decoded);
-    });
 
-    next();
+        const isTokenverified = await jwt.verify(token,config.secret,(err,decoded)=>{
+            if(err){
+                res.status(401).send({
+                    message : "Unauthorized/Invalid Token"
+                });
+                return false;
+            }
+
+            req.userEmail = decoded.id.email;
+            return true;
+
+        });
+        if(isTokenverified){
+            next();
+        }
+    }
+    catch(err){
+
+        console.log(err);
+        res.status(500).send({
+            message : "Some internal server error occurred "+ err
+        });
+    }
 }
 
-module.exports = {checkUserRegisterationDetails, checkUserLoginDetails, isTokenValid};
+const isAdmin = async(req,res,next)=>{
+
+    userResp = await User.findOne({
+        where:{
+            email : req.userEmail
+        }
+    });
+
+    roles = await userResp.getRoles();
+    console.log(roles);
+    for(let i=0; i<roles.length; i++){
+        console.log(roles[i].name);
+        if(roles[i].name === "admin"){
+            next();
+            return;
+        }
+    }
+    res.status(403).send({
+        message : "Require Admin Roles"
+    });
+
+    return;
+}
+
+module.exports = {checkUserRegisterationDetails, checkUserLoginDetails, isTokenValid, isAdmin};

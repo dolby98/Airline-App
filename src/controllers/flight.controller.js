@@ -30,7 +30,7 @@ exports.createFlight = async(req,res) =>{
 
 }
 
-exports.updateFlight = (req,res) =>{
+exports.updateFlight = async(req,res) =>{
     try{
         const flightNumber = req.body.number;
         const flightResp = await Flight.findByPk(flightNumber);
@@ -49,7 +49,7 @@ exports.updateFlight = (req,res) =>{
 
 exports.deleteFlight = async(req,res) =>{
     try{
-        const flightNumber = req.body.number;
+        const flightNumber = req.params.number;
 
         const flightResp = await Flight.findByPk(flightNumber);
         await flightResp.destroy();
@@ -65,9 +65,9 @@ exports.deleteFlight = async(req,res) =>{
     }
 }
 
-exports.getAFlight = (req,res) =>{
+exports.getAFlight = async(req,res) =>{
     try{
-        const flightNumber = req.body.number;
+        const flightNumber = req.params.number;
 
         const flightResp = await Flight.findByPk(flightNumber);
 
@@ -81,7 +81,7 @@ exports.getAFlight = (req,res) =>{
     }
 }
 
-exports.getAllFlights = (req,res) =>{
+exports.getAllFlights = async(req,res) =>{
     try{
 
         const flightResp = await Flight.findAll();

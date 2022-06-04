@@ -24,7 +24,7 @@ exports.createAirline = async(req,res) =>{
 
 exports.deleteairline = async(req,res) =>{
     try{
-        const airlineName = req.body.name;
+        const airlineName = req.params.name;
 
         const airlineResp = await Airline.findByPk(airlineName);
         await airlineResp.destroy();
@@ -40,12 +40,12 @@ exports.deleteairline = async(req,res) =>{
     }
 }
 
-exports.getAAirline = (req,res) =>{
+exports.getAAirline = async(req,res) =>{
     try{
-        const airlineName = req.body.name;
+        const airlineName = req.params.name;
 
         const airlineResp = await Airline.findByPk(airlineName);
-
+        console.log(airlineResp);
         return res.status(200).send(airlineResp);
         
     }
@@ -56,7 +56,7 @@ exports.getAAirline = (req,res) =>{
     }
 }
 
-exports.getAllAirlines = (req,res) =>{
+exports.getAllAirlines = async(req,res) =>{
     try{
 
         const airlineResp = await Airline.findAll();

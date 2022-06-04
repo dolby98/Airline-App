@@ -16,11 +16,27 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 db.User = require('./user.model')(sequelize,Sequelize);
+db.Role = require('./role.model')(sequelize,Sequelize);
 db.Flight = require('./flight.model')(sequelize,Sequelize);
 db.Airline = require('./airline.model')(sequelize,Sequelize);
 db.Review = require('./review.model')(sequelize,Sequelize);
 db.Booking = require('./booking.model')(sequelize,Sequelize);
 //Relations between tables
+
+db.User.belongsToMany(db.Role,{
+    through: "user_roles",
+    as: "roles",
+    foreignKey : "userEmail",
+    otherKey: "roleId"
+});
+db.Role.belongsToMany(db.User,{
+    through: "user_roles",
+    as:"users",
+    foreignKey : "roleId",
+    otherKey: "userEmail"
+});
+
+db.ROLES = ["user","admin"];
 
 // db.Flight.belongsTo(db.Airline);
 db.Airline.hasMany(db.Flight);

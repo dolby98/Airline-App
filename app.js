@@ -9,13 +9,22 @@ const app = express();
 const router = express.Router();
 
 
-db.sequelize.sync({force:true}).then(()=>{
+db.sequelize.sync({force:false}).then(()=>{
     console.log("Updating Airline db");
-    db.User.create({
-        username:'Dolby',
-        password:'1234#XYZ',
-        email:'123@xyz.com'
-    });
+    // db.Role.create({
+    //     id:1,
+    //     name:db.ROLES[0]
+    // });
+
+    // db.Role.create({
+    //     id:2,
+    //     name:db.ROLES[1]
+    // });
+    // db.User.create({
+    //     username:'Dolby',
+    //     password:'1234#XYZ',
+    //     email:'123@xyz.com'
+    // });
 }).catch((err)=>{
     console.log("Error occured while connecting" + err);
 });
