@@ -22,15 +22,17 @@ db.Review = require('./review.model')(sequelize,Sequelize);
 db.Booking = require('./booking.model')(sequelize,Sequelize);
 //Relations between tables
 
-db.Flight.belongsTo(db.Airline);
+// db.Flight.belongsTo(db.Airline);
+db.Airline.hasMany(db.Flight);
 
 db.User.hasMany(db.Review);
-
 db.Flight.hasMany(db.Review);
 
+// db.Booking.belongsTo(db.User);
+db.User.hasMany(db.Booking);
 db.Flight.hasMany(db.Booking);
 
-db.Booking.belongsTo(db.User);
+
 
 // db.Airline.hasMany(db.Booking);
 

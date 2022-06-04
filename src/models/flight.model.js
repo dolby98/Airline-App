@@ -1,7 +1,7 @@
 module.exports = (sequelize, Sequelize)=>{
 
     const Flight = sequelize.define('flight',{
-        id : {type:Sequelize.STRING, allowNull:false, primaryKey:true},
+        number : {type:Sequelize.STRING, allowNull:false, primaryKey:true},
         departureAirport : {type:Sequelize.STRING, allowNull:false},
         arrivalAirport : {type:Sequelize.STRING, allowNull:false},
         duration : {type:Sequelize.INTEGER, allowNull:false},
