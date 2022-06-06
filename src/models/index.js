@@ -42,7 +42,9 @@ db.ROLES = ["user","admin"];
 db.Airline.hasMany(db.Flight);
 
 db.User.hasMany(db.Review);
+
 db.Flight.hasMany(db.Review);
+db.Review.belongsTo(db.Flight);
 
 // db.Booking.belongsTo(db.User);
 db.User.hasMany(db.Booking);

@@ -180,15 +180,16 @@ const isAdmin = async(req,res,next)=>{
     for(let i=0; i<roles.length; i++){
         console.log(roles[i].name);
         if(roles[i].name === "admin"){
+            req.isAdmin = true;
             next();
             return;
         }
     }
+    req.isAdmin = false;
     res.status(403).send({
         message : "Require Admin Roles"
     });
 
     return;
 }
-
 module.exports = {checkUserRegisterationDetails, checkUserLoginDetails, isTokenValid, isAdmin};
