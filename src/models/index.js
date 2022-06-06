@@ -48,7 +48,10 @@ db.Review.belongsTo(db.Flight);
 
 // db.Booking.belongsTo(db.User);
 db.User.hasMany(db.Booking);
+db.Booking.belongsTo(db.User);
+
 db.Flight.hasMany(db.Booking);
+db.Booking.belongsTo(db.Flight);
 
 
 
