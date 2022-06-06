@@ -1,4 +1,6 @@
 const db = require('../models');
+const Op = db.Sequelize.Op;
+// const Op = require('sequelize');
 
 const Flight = db.Flight;
 
@@ -32,8 +34,8 @@ exports.createFlight = async(req,res) =>{
 
 exports.updateFlight = async(req,res) =>{
     try{
-        const flightNumber = req.body.number;
-        const flightResp = await Flight.findByPk(flightNumber);
+        const flightNumber = req.params.number;
+        var flightResp = await Flight.findByPk(flightNumber);
         flightResp.set(req.body);
         flightResp = await flightResp.save();
 
@@ -83,8 +85,65 @@ exports.getAFlight = async(req,res) =>{
 
 exports.getAllFlights = async(req,res) =>{
     try{
-
-        const flightResp = await Flight.findAll();
+        let flightResp;
+        flightQuery = req.query
+        sort = flightQuery.sort;
+        filter = flightQuery.filter;
+        if(sort || filter){
+            
+            if(sort){
+                sortBy = sort.split(',');
+                sortByParameters = []
+                for(element of sortBy){
+                    attribute = element.split(' ');
+                    if(attribute[0]=='duration' || attribute[0]=='price'){
+                        sortByParameters.push(attribute);
+                    }
+                    else{
+                        return res.status(400).send({
+                            message : "Only duration and price can be sorted"
+                        });
+                    }
+                }
+                
+                flightResp = await Flight.findAll({
+                    order : sortByParameters
+                });
+            }
+            else if(filter){
+                filterBy = filter.split(',');
+                filterByParameters = {};
+                for(element of filterBy){
+                    attribute = element.split(' ');
+                    if(attribute[0]=='duration' || attribute[0]=='price'){
+                        let filterQuery;
+                        if(attribute[1]=='lt'){
+                            filterQuery = {[Op.lt] : parseInt(attribute[2])};
+                        }
+                        else if(attribute[1]=='gt'){
+                            filterQuery = {[Op.gt] : parseInt(attribute[2])};
+                        }
+                        else if(attribute[1]=='eq'){
+                            filterQuery = {[Op.eq] : parseInt(attribute[2])};
+                        }
+                        
+                        filterByParameters[attribute[0]] = filterQuery;
+                    }
+                    else{
+                        return res.status(400).send({
+                            message : "Only duration and price can be filtered"
+                        });
+                    }
+                }                
+                flightResp = await Flight.findAll({
+                    where: filterByParameters
+                });
+            }
+        }
+        else{
+            flightResp = await Flight.findAll();
+        }
+        
 
         return res.status(200).send(flightResp);
     }
@@ -94,3 +153,4 @@ exports.getAllFlights = async(req,res) =>{
         });
     }
 }
+
