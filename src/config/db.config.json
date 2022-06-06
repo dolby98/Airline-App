@@ -1,8 +1,8 @@
 {
     "dev":{
         "database":"airline",
-        "username":"root",
-        "password":"dolby",
+        "username":"username",
+        "password": "password",
         "hostDialect" : {
             "host":"localhost",
             "dialect": "mysql"
